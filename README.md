@@ -84,15 +84,15 @@ The data collector container does the following:
 
 ```
 
-### Run Data Collector Container & Test CLI
-#### Create .env file
-Create a .env file in the root of the git working tree:
-
+### Create .env file
+Create a .env file in the root of the git working tree; e.g. (*note: customize for your project*):
 ```
-# replace with your GCS bucket name  
+GCP_PROJECT=my-gcp-project
+GCP_REGION=us-central1
 GCS_BUCKET_NAME=mushroom-app-ml-workflow-demo
+GCS_PACKAGE_URI=gs://mushroom-app-ml-workflow-demo
 ```
-
+### Run Data Collector Container & Test CLI
 #### Test Data Collector
 
 * Run `docker compose run --rm data-collector --search --nums 10 --query "oyster mushrooms" "crimini mushrooms" "amanita mushrooms"`
@@ -107,16 +107,10 @@ GCS_BUCKET_NAME=mushroom-app-ml-workflow-demo
 * Go and check your GCS bucket to see if `tfrecords.zip` was uploaded. 
 
 ### OPTIONAL: Run Model Training Container & Test CLI
-#### Run `docker-shell.sh` or `docker-shell.bat`
-Based on your OS, run the startup script to make building & running the container easy
-
-- Make sure you are inside the `model-training` folder and open a terminal at this location
-- Run `sh docker-shell.sh` or `docker-shell.bat` for windows
-
 #### Test Model Training
 
 ##### Local Training
-* Run `python -m package.trainer.task --epochs=1 --batch_size=4 --bucket_name=mushroom-app-ml-workflow-demo`
+* Run `docker compose run --rm model-training-local --epochs=1 --batch_size=4`
 ##### Remote Training
 * Run `sh package-trainer.sh`, this will package the trainer code and upload into a bucket
 * Run `python cli.py --train`, this will invoke a Vertex AI training job
