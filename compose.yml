@@ -1,6 +1,6 @@
 services:
   data-collector:
-    image: ${CONTAINER_REGISTRY}/mushroom-app-data-collector
+    image: ${CONTAINER_REGISTRY:-localhost}/mushroom-app-data-collector
     pull_policy: never
     build:
       context: ./src/data-collector

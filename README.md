@@ -87,12 +87,13 @@ The data collector container does the following:
 ### Create .env file
 Create a .env file in the root of the git working tree; e.g. (*note: customize for your project*):
 ```
-CONTAINER_REGISTRY=docker.io/my-dockerhub-username
 GCP_PROJECT=my-gcp-project
 GCP_REGION=us-central1
 GCS_BUCKET_NAME=mushroom-app-ml-workflow-demo
 GCS_PACKAGE_URI=gs://mushroom-app-ml-workflow-demo
 GCS_SERVICE_ACCOUNT=ml-workflow@ac215-project.iam.gserviceaccount.com
+# optional, only if pushing data-collector to container registry
+CONTAINER_REGISTRY=docker.io/my-dockerhub-username
 ```
 ### Run Data Collector Container & Test CLI
 #### Test Data Collector
@@ -121,9 +122,11 @@ GCS_SERVICE_ACCOUNT=ml-workflow@ac215-project.iam.gserviceaccount.com
 ## OPTIONAL: Build & Push Data Collector Image
 This step has already been done for this tutorial. For this tutorial in order to make the docker images public we pushed them to docker hub. 
 
+
 ### Pushing Docker Image to Docker Hub
 * Sign up in Docker Hub and create an [Access Token](https://hub.docker.com/settings/security)
 * Login to the Hub: `docker login -u <USER NAME> -p <ACCESS TOKEN>`
+* Ensure .env contains `CONTAINER_REGISTRY=docker.io/<USER NAME>`
 * Build and Tag the Docker Image: `docker compose build data-collector`
 * If you are on M1/2 Macs: Build and Tag the Docker Image: `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose build data-collector`
 * Push to Docker Hub: `docker compose push data-collector`
