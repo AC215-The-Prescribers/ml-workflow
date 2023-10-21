@@ -144,49 +144,11 @@ In this step we will run the data collector container as a serverless task in Ve
 
 In this section we will use Vertex AI Pipelines to automate running oa all the tasks the mushroom app
 
-### In the folder `workflow` Run `docker-shell.sh` or `docker-shell.bat`
-Based on your OS, run the startup script to make building & running the container easy
-
-This is what your `docker-shell` file will look like:
-```
-export IMAGE_NAME="mushroom-app-workflow"
-export BASE_DIR=$(pwd)
-export SECRETS_DIR=$(pwd)/../../../secrets/
-export GCP_PROJECT="ac215-project" [REPLACE WITH YOUR PROJECT]
-export GCS_BUCKET_NAME="mushroom-app-ml-workflow-demo" [REPLACE WITH YOUR BUCKET NAME]
-export GCS_SERVICE_ACCOUNT="ml-workflow@ac215-project.iam.gserviceaccount.com"
-export GCP_REGION="us-central1" [REPLACE WITH YOUR SERVICE ACCOUNT]
-export GCS_PACKAGE_URI="gs://mushroom-app-trainer-code" [REPLACE WITH YOUR BUCKET NAME]
-
-# Build the image based on the Dockerfile
-#docker build -t $IMAGE_NAME -f Dockerfile .
-docker build -t $IMAGE_NAME --platform=linux/amd64 -f Dockerfile .
-
-
-# Run Container
-docker run --rm --name $IMAGE_NAME -ti \
--v /var/run/docker.sock:/var/run/docker.sock \
--v "$BASE_DIR":/app \
--v "$SECRETS_DIR":/secrets \
--v "$BASE_DIR/../data-collector":/data-collector \
--v "$BASE_DIR/../data-processor":/data-processor \
--e GOOGLE_APPLICATION_CREDENTIALS=/secrets/ml-workflow.json \
--e GCP_PROJECT=$GCP_PROJECT \
--e GCS_BUCKET_NAME=$GCS_BUCKET_NAME \
--e GCS_SERVICE_ACCOUNT=$GCS_SERVICE_ACCOUNT \
--e GCP_REGION=$GCP_REGION \
--e GCS_PACKAGE_URI=$GCS_PACKAGE_URI \
-$IMAGE_NAME
-```
-
-- Make sure you are inside the `workflow` folder and open a terminal at this location
-- Run `sh docker-shell.sh` or `docker-shell.bat` for windows
-
 ### Run Workflow Pipeline in Vertex AI
 In this step we will run the workflow as serverless tasks in Vertex AI Pipelines.
 
 #### Entire Pipeline
-* Run `python cli.py --pipeline`, this will orchestrate all the tasks for the workflow and create a definition file called `pipeline.yaml`.
+* Run `docker compose run --rm workflow --pipeline`, this will orchestrate all the tasks for the workflow and create a definition file called `pipeline.yaml`.
 * Inspect `pipeline.yaml`
 * Go to [Vertex AI Pipeline](https://console.cloud.google.com/vertex-ai/pipelines) to inspect the status of the job
 
@@ -199,23 +161,18 @@ You should be able to see the status of the pipeline in Vertex AI similar to thi
 
 #### Test Specific Components
 
-* For Data Collector: Run `python cli.py --data_collector`
-* For Data Processor: Run `python cli.py --data_processor`
-* For Model Training: Run `python cli.py --model_training`
-* For Model Deploy: Run `python cli.py --model_deploy`
+* For Data Collector: Run `docker compose run --rm workflow --data_collector`
+* For Data Processor: Run `docker compose run --rm workflow --data_processor`
+* For Model Training: Run `docker compose run --rm workflow --model_training`
+* For Model Deploy: Run `docker compose run --rm workflow --model_deploy`
 
 
 ## Vertex AI Pipelines: Samples
 
 In this section we will simple pipelines and run it on Vertex AI
 
-### In the folder `workflow` Run `docker-shell.sh` or `docker-shell.bat`
-- Make sure you are inside the `workflow` folder and open a terminal at this location
-- Run `sh docker-shell.sh` or `docker-shell.bat` for windows
-
-
 #### Run Simple Pipelines
 
-* Sample Pipeline 1: Run `python cli.py --simple1`
+* Sample Pipeline 1: Run `docker compose run --rm workflow --simple1`
 <img src="images/vertex-ai-simeple-pipeline-1.png"  width="400">
 <br>
