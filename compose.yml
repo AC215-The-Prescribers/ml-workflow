@@ -10,6 +10,16 @@ services:
       - ./src/data-collector:/app
       - persistent:/persistent:rw
 
+  data-processor:
+    build: src/data-processor
+    environment:
+      GCS_BUCKET_NAME: # define in .env
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
+    secrets:
+      - ml-workflow
+    volumes:
+      - ./src/data-processor:/app
+      - persistent:/persistent:rw
     
 secrets:
   ml-workflow:
