@@ -1,6 +1,9 @@
 services:
   data-collector:
-    build: src/data-collector
+    image: ${CONTAINER_REGISTRY}/mushroom-app-data-collector
+    pull_policy: never
+    build:
+      context: ./src/data-collector
     environment:
       GCS_BUCKET_NAME: # define in .env
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
@@ -46,6 +49,22 @@ services:
       - ml-workflow
     volumes:
       - ./src/model-training:/app
+
+  workflow:
+    build: src/workflow
+    environment:
+      GCS_BUCKET_NAME: # defined in .env
+      GCS_PACKAGE_URI: # defined in .env
+      GCS_SERVICE_ACCOUNT: # defined in .env
+      GCP_PROJECT: # defined in .env
+      GCP_REGION: # defined in .env
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
+    secrets:
+      - ml-workflow
+    volumes:
+      - ./src/data-processor:/data-processor
+      - ./src/data-collector:/data-collector
+      - ./src/workflow:/app
 
 secrets:
   ml-workflow:

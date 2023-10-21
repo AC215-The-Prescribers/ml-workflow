@@ -87,10 +87,12 @@ The data collector container does the following:
 ### Create .env file
 Create a .env file in the root of the git working tree; e.g. (*note: customize for your project*):
 ```
+CONTAINER_REGISTRY=docker.io/my-dockerhub-username
 GCP_PROJECT=my-gcp-project
 GCP_REGION=us-central1
 GCS_BUCKET_NAME=mushroom-app-ml-workflow-demo
 GCS_PACKAGE_URI=gs://mushroom-app-ml-workflow-demo
+GCS_SERVICE_ACCOUNT=ml-workflow@ac215-project.iam.gserviceaccount.com
 ```
 ### Run Data Collector Container & Test CLI
 #### Test Data Collector
@@ -122,53 +124,19 @@ This step has already been done for this tutorial. For this tutorial in order to
 ### Pushing Docker Image to Docker Hub
 * Sign up in Docker Hub and create an [Access Token](https://hub.docker.com/settings/security)
 * Login to the Hub: `docker login -u <USER NAME> -p <ACCESS TOKEN>`
-* Build and Tag the Docker Image: `docker build -t <USER NAME>/mushroom-app-data-collector -f Dockerfile .`
-* If you are on M1/2 Macs: Build and Tag the Docker Image: `docker build -t <USER NAME>/mushroom-app-data-collector --platform=linux/amd64/v2 -f Dockerfile .`
-* Push to Docker Hub: `docker push <USER NAME>/mushroom-app-data-collector`
+* Build and Tag the Docker Image: `docker compose build data-collector`
+* If you are on M1/2 Macs: Build and Tag the Docker Image: `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose build data-collector`
+* Push to Docker Hub: `docker compose push data-collector`
 
 
 ## Automate Running Data Collector Container
 
 In this section we will use Vertex AI Pipelines to automate running the task in our data collector container
 
-### In the folder `workflow` Run `docker-shell.sh` or `docker-shell.bat`
-Based on your OS, run the startup script to make building & running the container easy
-
-This is what your `docker-shell` file will look like:
-```
-export IMAGE_NAME="mushroom-app-workflow"
-export BASE_DIR=$(pwd)
-export SECRETS_DIR=$(pwd)/../../../secrets/
-export GCP_PROJECT="ac215-project" [REPLACE WITH YOUR PROJECT]
-export GCS_BUCKET_NAME="mushroom-app-ml-workflow-demo" [REPLACE WITH YOUR BUCKET NAME]
-export GCS_SERVICE_ACCOUNT="ml-workflow@ac215-project.iam.gserviceaccount.com" [REPLACE WITH YOUR SERVICE ACCOUNT]
-
-# Build the image based on the Dockerfile
-#docker build -t $IMAGE_NAME -f Dockerfile .
-docker build -t $IMAGE_NAME --platform=linux/amd64 -f Dockerfile .
-
-
-# Run Container
-docker run --rm --name $IMAGE_NAME -ti \
--v /var/run/docker.sock:/var/run/docker.sock \
--v "$BASE_DIR":/app \
--v "$SECRETS_DIR":/secrets \
--v "$BASE_DIR/../data-collector":/data-collector \
--v "$BASE_DIR/../data-processor":/data-processor \
--e GOOGLE_APPLICATION_CREDENTIALS=/secrets/ml-workflow.json \
--e GCP_PROJECT=$GCP_PROJECT \
--e GCS_BUCKET_NAME=$GCS_BUCKET_NAME \
--e GCS_SERVICE_ACCOUNT=$GCS_SERVICE_ACCOUNT \
-$IMAGE_NAME
-```
-
-- Make sure you are inside the `workflow` folder and open a terminal at this location
-- Run `sh docker-shell.sh` or `docker-shell.bat` for windows
-
 ### Run Data Collector in Vertex AI
 In this step we will run the data collector container as a serverless task in Vertex AI Pipelines.
 
-* Run `python cli.py --data_collector`, this will package the data collector docker image as a Vertex AI Pipeline job and create a definition file called `data_collector.yaml`. This step also creates an `PipelineJob` to run on Vertex AI
+* Run `docker compose run --rm workflow --data_collector`, this will package the data collector docker image as a Vertex AI Pipeline job and create a definition file called `data_collector.yaml`. This step also creates an `PipelineJob` to run on Vertex AI
 * Inspect `data_collector.yaml`
 * Go to [Vertex AI Pipeline](https://console.cloud.google.com/vertex-ai/pipelines) to inspect the status of the job
 
