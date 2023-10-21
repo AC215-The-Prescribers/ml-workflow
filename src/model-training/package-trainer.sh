@@ -1,4 +1,6 @@
-rm -f trainer.tar trainer.tar.gz
-tar cvf trainer.tar package
-gzip trainer.tar
-gsutil cp trainer.tar.gz $GCS_PACKAGE_URI/mushroom-app-trainer.tar.gz
+#!/bin/sh
+set -o errexit -o nounset
+
+tar -czvf /tmp/trainer.tar.gz package
+gcloud auth activate-service-account --key-file ${GOOGLE_APPLICATION_CREDENTIALS}
+gsutil cp /tmp/trainer.tar.gz $GCS_PACKAGE_URI/mushroom-app-trainer.tar.gz

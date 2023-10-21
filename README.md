@@ -112,8 +112,8 @@ GCS_PACKAGE_URI=gs://mushroom-app-ml-workflow-demo
 ##### Local Training
 * Run `docker compose run --rm model-training-local --epochs=1 --batch_size=4`
 ##### Remote Training
-* Run `sh package-trainer.sh`, this will package the trainer code and upload into a bucket
-* Run `python cli.py --train`, this will invoke a Vertex AI training job
+* Run `docker compose run --rm --entrypoint=/app/package-trainer.sh model-training`, this will package the trainer code and upload into a bucket
+* Run `docker compose run --rm model-training --train`, this will invoke a Vertex AI training job
 
 
 ## OPTIONAL: Build & Push Data Collector Image

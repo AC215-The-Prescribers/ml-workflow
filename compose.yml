@@ -33,6 +33,20 @@ services:
       - ./src/model-training:/app
       - persistent:/persistent:rw
 
+# remote, using Vertex AI
+  model-training:
+    build: src/model-training
+    environment:
+      GCS_BUCKET_NAME: # defined in .env
+      GCS_PACKAGE_URI: # defined in .env
+      GCP_PROJECT: # defined in .env
+      GCP_REGION: # defined in .env
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
+    secrets:
+      - ml-workflow
+    volumes:
+      - ./src/model-training:/app
+
 secrets:
   ml-workflow:
     file: ../secrets/ml-workflow.json
