@@ -2,3 +2,5 @@
 .DS_Store
 /docker-volumes
 trainer.tar.gz
+.env
+__pycache__

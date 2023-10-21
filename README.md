@@ -85,40 +85,17 @@ The data collector container does the following:
 ```
 
 ### Run Data Collector Container & Test CLI
-#### Run `docker-shell.sh` or `docker-shell.bat`
-Based on your OS, run the startup script to make building & running the container easy
+#### Create .env file
+Create a .env file in the root of the git working tree:
 
-This is what your `docker-shell` file will look like:
 ```
-export IMAGE_NAME="mushroom-app-data-collector"
-export BASE_DIR=$(pwd)
-export PERSISTENT_DIR=$(pwd)/../../../persistent-folder/
-export SECRETS_DIR=$(pwd)/../../../secrets/
-export GCP_PROJECT="ac215-project" [REPLACE WITH YOUR PROJECT]
-export GCS_BUCKET_NAME="mushroom-app-ml-workflow-demo" [REPLACE WITH YOUR BUCKET NAME]
-
-# Build the image based on the Dockerfile
-#docker build -t $IMAGE_NAME -f Dockerfile .
-# M1/2 chip macs use this line
-docker build -t $IMAGE_NAME --platform=linux/arm64/v8 -f Dockerfile .
-
-# Run Container
-docker run --rm --name $IMAGE_NAME -ti \
--v "$BASE_DIR":/app \
--v "$SECRETS_DIR":/secrets \
--v "$PERSISTENT_DIR":/persistent \
--e GOOGLE_APPLICATION_CREDENTIALS=/secrets/data-service-account.json \
--e GCP_PROJECT=$GCP_PROJECT \
--e GCS_BUCKET_NAME=$GCS_BUCKET_NAME \
-$IMAGE_NAME
+# replace with your GCS bucket name  
+GCS_BUCKET_NAME=mushroom-app-ml-workflow-demo
 ```
-
-- Make sure you are inside the `data-collector` folder and open a terminal at this location
-- Run `sh docker-shell.sh` or `docker-shell.bat` for windows
 
 #### Test Data Collector
 
-* Run `python cli.py --search --nums 10 --query "oyster mushrooms" "crimini mushrooms" "amanita mushrooms"`
+* Run `docker compose run --rm data-collector --search --nums 10 --query "oyster mushrooms" "crimini mushrooms" "amanita mushrooms"`
 * Go and check your GCS bucket to see if `raw.zip` was uploaded. 
 
 ### OPTIONAL: Run Data Processor Container & Test CLI

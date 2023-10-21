@@ -1,0 +1,19 @@
+services:
+  data-collector:
+    build: src/data-collector
+    environment:
+      GCS_BUCKET_NAME: # define in .env
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
+    secrets:
+      - ml-workflow
+    volumes:
+      - ./src/data-collector:/app
+      - persistent:/persistent:rw
+
+    
+secrets:
+  ml-workflow:
+    file: ../secrets/ml-workflow.json
+    
+volumes:
+  persistent:
