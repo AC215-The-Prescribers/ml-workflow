@@ -15,13 +15,11 @@ import google.cloud.aiplatform as aip
 from model import model_training, model_deploy
 
 
-GCP_PROJECT = os.environ["GCP_PROJECT"]
 GCS_BUCKET_NAME = os.environ["GCS_BUCKET_NAME"]
 BUCKET_URI = f"gs://{GCS_BUCKET_NAME}"
 PIPELINE_ROOT = f"{BUCKET_URI}/pipeline_root/root"
 GCS_SERVICE_ACCOUNT = os.environ["GCS_SERVICE_ACCOUNT"]
 GCS_PACKAGE_URI = os.environ["GCS_PACKAGE_URI"]
-GCP_REGION = os.environ["GCP_REGION"]
 
 # DATA_COLLECTOR_IMAGE = "gcr.io/ac215-project/mushroom-app-data-collector"
 DATA_COLLECTOR_IMAGE = "dlops/mushroom-app-data-collector"
@@ -63,7 +61,7 @@ def main(args=None):
         )
 
         # Submit job to Vertex AI
-        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        aip.init(staging_bucket=BUCKET_URI)
 
         job_id = generate_uuid()
         DISPLAY_NAME = "mushroom-app-data-collector-" + job_id
@@ -105,7 +103,7 @@ def main(args=None):
         )
 
         # Submit job to Vertex AI
-        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        aip.init(staging_bucket=BUCKET_URI)
 
         job_id = generate_uuid()
         DISPLAY_NAME = "mushroom-app-data-processor-" + job_id
@@ -125,8 +123,6 @@ def main(args=None):
         @dsl.pipeline
         def model_training_pipeline():
             model_training(
-                project=GCP_PROJECT,
-                location=GCP_REGION,
                 staging_bucket=GCS_PACKAGE_URI,
                 bucket_name=GCS_BUCKET_NAME,
             )
@@ -137,7 +133,7 @@ def main(args=None):
         )
 
         # Submit job to Vertex AI
-        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        aip.init(staging_bucket=BUCKET_URI)
 
         job_id = generate_uuid()
         DISPLAY_NAME = "mushroom-app-model-training-" + job_id
@@ -166,7 +162,7 @@ def main(args=None):
         )
 
         # Submit job to Vertex AI
-        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        aip.init(staging_bucket=BUCKET_URI)
 
         job_id = generate_uuid()
         DISPLAY_NAME = "mushroom-app-model-deploy-" + job_id
@@ -225,8 +221,6 @@ def main(args=None):
             # Model Training
             model_training_task = (
                 model_training(
-                    project=GCP_PROJECT,
-                    location=GCP_REGION,
                     staging_bucket=GCS_PACKAGE_URI,
                     bucket_name=GCS_BUCKET_NAME,
                     epochs=15,
@@ -250,7 +244,7 @@ def main(args=None):
         compiler.Compiler().compile(ml_pipeline, package_path="pipeline.yaml")
 
         # Submit job to Vertex AI
-        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        aip.init(staging_bucket=BUCKET_URI)
 
         job_id = generate_uuid()
         DISPLAY_NAME = "mushroom-app-pipeline-" + job_id
@@ -295,7 +289,7 @@ def main(args=None):
         )
 
         # Submit job to Vertex AI
-        aip.init(project=GCP_PROJECT, staging_bucket=BUCKET_URI)
+        aip.init(staging_bucket=BUCKET_URI)
 
         job_id = generate_uuid()
         DISPLAY_NAME = "sample-pipeline-" + job_id

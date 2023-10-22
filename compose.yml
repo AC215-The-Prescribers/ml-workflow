@@ -42,8 +42,6 @@ services:
     environment:
       GCS_BUCKET_NAME: # defined in .env
       GCS_PACKAGE_URI: # defined in .env
-      GCP_PROJECT: # defined in .env
-      GCP_REGION: # defined in .env
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
     secrets:
       - ml-workflow
@@ -56,8 +54,6 @@ services:
       GCS_BUCKET_NAME: # defined in .env
       GCS_PACKAGE_URI: # defined in .env
       GCS_SERVICE_ACCOUNT: # defined in .env
-      GCP_PROJECT: # defined in .env
-      GCP_REGION: # defined in .env
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
     secrets:
       - ml-workflow

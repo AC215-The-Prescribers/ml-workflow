@@ -87,8 +87,6 @@ The data collector container does the following:
 ### Create .env file
 Create a .env file in the root of the git working tree; e.g. (*note: customize for your project*):
 ```
-GCP_PROJECT=my-gcp-project
-GCP_REGION=us-central1
 GCS_BUCKET_NAME=mushroom-app-ml-workflow-demo
 GCS_PACKAGE_URI=gs://mushroom-app-ml-workflow-demo
 GCS_SERVICE_ACCOUNT=ml-workflow@ac215-project.iam.gserviceaccount.com
@@ -176,6 +174,6 @@ In this section we will simple pipelines and run it on Vertex AI
 
 #### Run Simple Pipelines
 
-* Sample Pipeline 1: Run `docker compose run --rm workflow --simple1`
+* Sample Pipeline 1: Run `docker compose run --rm workflow --sample1`
 <img src="images/vertex-ai-simeple-pipeline-1.png"  width="400">
 <br>
