@@ -45,10 +45,10 @@ WORKDIR /app
 ADD --chown=app:app Pipfile Pipfile.lock /app/
 
 # For generating Pipfile.lock
-RUN pip install pipenv==2023.10.24
+# RUN pip install pipenv==2023.10.24
 
 # prod
-# RUN pipenv sync --system
+RUN pipenv sync --system
 
 # Add the rest of the source code. This is done last so we don't invalidate all
 # layers when we change a line of code.

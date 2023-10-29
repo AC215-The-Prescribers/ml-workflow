@@ -54,8 +54,8 @@ services:
       GCS_BUCKET_NAME: # defined in .env
       GCS_PACKAGE_URI: # defined in .env
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/ml-workflow
-    # secrets:
-    #   - ml-workflow
+    secrets:
+      - ml-workflow
     volumes:
       - ./src/bloom:/app
 
