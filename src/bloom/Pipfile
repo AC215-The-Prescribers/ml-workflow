@@ -12,6 +12,8 @@ pillow = "*"
 tensorflow = "*"
 torch = "*"
 transformers = "*"
+dvc = "*"
+kfp = "*"
 
 
 [requires]
